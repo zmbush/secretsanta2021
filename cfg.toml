@@ -1,0 +1,179 @@
+[columns]
+email = "Email Address"
+
+desired_characters = "Favorite character(s)"
+desired_ships = "Favorite ships"
+
+banned_characters = "Characters I do not want to create for"
+banned_ships = "Ships I do not want to create for"
+
+[smushes]
+acelu = "ace/luffy"
+acesabo = "ace/sabo"
+asl = "ace/sabo/luffy"
+"asl brothers" = "ace/sabo/luffy"
+barco = "marco/OC"
+boalu = "boa hancock/luffy"
+brookyorki = "brook/yorki"
+deucexace = "deuce/ace"
+doflacora = "doflamingo/law/corazon"
+dofladile = "doflamingo/crocodile"
+doflaw = "doflamingo/law"
+frobin = "franky/robin"
+garproger = "garp/roger"
+izodenjiro = "izo/denjiro"
+izothatch = "izo/thatch"
+kayausopp = "kaya/usopp"
+kiddxlaw = "kidd/law"
+kidkiller = "kidd/killer"
+kidlaw = "kidd/law"
+kidlawlu = "kidd/law/luffy"
+kidlu = "kidd/luffy"
+lawbin = "law/robin"
+lawkins = "law/hawkins"
+lawlu = "law/luffy"
+lawluffy = "law/luffy"
+lawnami = "law/nami"
+lucciluffy = "luccy/luffy"
+luccipaulie = "lucci/pauli"
+luffyxsanji = "luffy/sanji"
+lulu = "lucci/luffy"
+luvi = "luffy/vivi"
+lzs = "luffy/zoro/sanji"
+marlaw = "marco/law"
+namitashigi = "nami/tashigi"
+namivivi = "nami/vivi"
+namiwanda = "nami/wanda"
+navi = "nami/vivi"
+peronazoro = "perona/zoro"
+rayb = "rayleigh/OC"
+rogerb = "roger/OC"
+sabala = "sabo/koala"
+sabokoala = "sabu/koala"
+sabolu = "sabo/luffy"
+sakabors = "sakazuki/borsalino"
+sakaissho = "sakazuki/issho"
+sanami = "sanji/nami"
+sanuso = "sanji/usopp"
+smokertashigi = "smoker/tashigi"
+yamaace = "yama/ace"
+yamakiku = "yamato/kiku"
+yamatoace = "yamato/ace"
+zolalwlu = "zoro/law/luffy"
+zolaw = "zoro/law"
+zolawlu = "zoro/law/luffy"
+zolu = "zoro/luffy"
+zolusan = "zoro/luffy/sanji"
+zonami = "zoro/nami"
+zorobin = "zoro/robin"
+zorosanji = "zoro/sanji"
+zorotashigi = "zoro/tashigi"
+zosan = "zoro/sanji"
+zotash = "zoro/tashigi"
+
+[families.vinsmoke]
+members = ["ichiji", "judge", "niji", "reiju", "sanji", "sora", "yonji"]
+
+[families."monkey d."]
+members = ["dragon", "garp", "luffy"]
+misspellings = ["monkey d"]
+
+[families."portgas d."]
+members = ["ace", "rouge"]
+misspellings = ["portags d", "portags d.", "portgas d"]
+
+[families.donquixote]
+members = ["doflamingo", "rocinante", "rosinante"]
+
+[families.charlotte]
+members = ["katakuri", "linlin", "perospero", "pudding", "smoothie"]
+misspellings = ["charolotte"]
+
+[families.kurozumi]
+members = ["kanjuro", "orochi", "tama"]
+
+[families.kozuki]
+members = ["hiyori", "momonosuke", "oden", "toki"]
+
+[families."celestial dragons"]
+members = ["saint charlos", "saint shalria"]
+
+[families.vegapunk]
+joiner = "/"
+members = ["atlas", "edison", "lilith", "pythagoras", "shaka", "york"]
+
+[families."straw hats"]
+members = [
+    "brook",
+    "franky",
+    "jinbe",
+    "luffy",
+    "nami",
+    "robin",
+    "usopp",
+    "zoro",
+]
+misspellings = ["strawhats"]
+
+[characters]
+akainu = "sakazuki"
+aokiji = "kuzan"
+apoo = "scratchmen apoo"
+"baby 5" = "baby5"
+bartolomeo = "barto"
+bellmere = ["bell-mère", "bellmère"]
+"big mom" = "linlin"
+blackbeard = [
+    "marshal d teach",
+    "marshal d. teach",
+    "marshall d teach",
+    "marshall d. teach",
+    "marshall d. teach/blackbeard",
+]
+"boa hancock" = ["boa handcock", "boa"]
+"bon clay" = "bon"
+buggy = "buggy the clown"
+caesar = ["caesar clown", "ceasar clown"]
+chopper = ["tony tony chopper", "tonytony chopper"]
+coby = "koby"
+corazon = [
+    "corazón",
+    "rocinante",
+    "roscinante",
+    "rosinante donquixote",
+    "rosinante",
+]
+crocodile = "sir crocodile"
+doflamingo = "doflamingo donquixote"
+drake = ["x drake", "xdrake"]
+enel = "god enel"
+fujitora = "issho"
+jack = "jack the drought"
+jinbe = ["jimbe", "jimbei", "jinbei"]
+kidd = ["eustass kid", "eustass kidd", "kid"]
+kizaru = "borsalino"
+law = [
+    "trafalgar d law",
+    "trafalgar d water law",
+    "trafalgar d. water law",
+    "trafalgar law 💛",
+    "trafalgar law",
+    "trafalgar water d. law",
+    "trafalger d. water law",
+    "trafargar d. water law",
+    "tralfagar law",
+]
+lucci = "rob lucci"
+luffyko = "femluffy"
+marco = ["marco the phoenix", "phoenix marco"]
+mihawk = "dracule mihawk"
+moria = ["gecko moria", "geko moria"]
+queen = "queen the plague"
+robin = "nico robin"
+rocks = "rocks d xebec"
+"senor pink" = ["senior pink", "senor pink"]
+smoker = "smo"
+tama = "otama"
+"van der decken" = "vander decken"
+vivi = "nefertari vivi"
+zoro = "roronoa zoro"
