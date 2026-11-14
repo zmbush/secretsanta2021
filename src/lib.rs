@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
 use anyhow::anyhow;
 use clap::Parser;
+use itertools::{EitherOrBoth, Itertools};
 use rand::prelude::SliceRandom;
 use serde::Deserialize;
 
@@ -14,12 +15,16 @@ fn parenthetical() -> &'static regex::Regex {
 #[derive(Debug, Deserialize)]
 struct Columns {
     email: String,
+    pinch_hitter: String,
 
     desired_characters: String,
     desired_ships: String,
 
     banned_characters: String,
     banned_ships: String,
+
+    desired_type: String,
+    creation_type: String,
 }
 
 fn default_mismatch_threshold() -> f32 {
@@ -88,16 +93,155 @@ enum Commands {
     ListCharacters,
     CheckDuplicates,
     AssignSantas,
+    FindPinchHitter {
+        #[arg(short, long)]
+        giftee: String,
+    },
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum CreationType {
+    FanArt,
+    Fanfiction,
+    Either,
+}
+impl TryFrom<String> for CreationType {
+    type Error = anyhow::Error;
+
+    fn try_from(value: String) -> Result<Self, anyhow::Error> {
+        value.as_str().try_into()
+    }
+}
+
+impl TryFrom<&str> for CreationType {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &str) -> Result<Self, anyhow::Error> {
+        use CreationType::*;
+        Ok(match value {
+            "Fan art" => FanArt,
+            "Fanfiction" => Fanfiction,
+            "Either" => Either,
+            "Fan art, Fanfiction" => Either,
+            "Fan art, Either" => Either,
+            "Fan art, Fanfiction, Either" => Either,
+            other => return Err(anyhow!("No creation type match for: {other}")),
+        })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+enum ShipMember {
+    Value(String),
+
+    Any,
+}
+
+impl<T: Into<String>> From<T> for ShipMember {
+    fn from(value: T) -> Self {
+        let v = value.into();
+        match &v[..] {
+            "*" | "any" | "all" | "anyone" => ShipMember::Any,
+            _ => ShipMember::Value(v),
+        }
+    }
+}
+
+impl ShipMember {
+    fn is_any(&self) -> bool {
+        matches!(self, ShipMember::Any)
+    }
+}
+
+impl std::fmt::Display for ShipMember {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ShipMember::Any => write!(f, "*"),
+            ShipMember::Value(value) => write!(f, "{value}"),
+        }
+    }
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct ShipSpec(Vec<ShipMember>);
+
+impl std::fmt::Display for ShipSpec {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for member in &self.0 {
+            write!(f, "{member}#")?;
+        }
+        Ok(())
+    }
+}
+
+impl ShipSpec {
+    fn matches(&self, other: &ShipSpec) -> bool {
+        for eob in self.0.iter().zip_longest(other.0.iter()) {
+            match eob {
+                EitherOrBoth::Both(a, b) => {
+                    if a.is_any() || b.is_any() {
+                        continue;
+                    }
+                    if a != b {
+                        return false;
+                    }
+                }
+                EitherOrBoth::Left(a) => {
+                    if !a.is_any() {
+                        return false;
+                    }
+                }
+                EitherOrBoth::Right(b) => {
+                    if !b.is_any() {
+                        return false;
+                    }
+                }
+            }
+        }
+        true
+    }
+}
+
+#[derive(Debug, Default, Clone, PartialEq)]
+struct ShipSet(Vec<ShipSpec>);
+
+impl ShipSet {
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    fn insert(&mut self, spec: ShipSpec) {
+        if !self.0.contains(&spec) {
+            self.0.push(spec);
+        }
+        self.0.sort();
+    }
+
+    fn difference(&self, other: &ShipSet) -> usize {
+        let mut diff = 0;
+        'items: for item in &self.0 {
+            for removal in &other.0 {
+                if removal.matches(item) {
+                    continue 'items;
+                }
+            }
+            diff += 1;
+        }
+        diff
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
 struct Participant {
     email: String,
+    creation_type: CreationType,
+    desired_type: CreationType,
+    pinch_hitter: bool,
 
     desired_characters: BTreeSet<String>,
-    desired_ships: BTreeSet<String>,
+    desired_ships: ShipSet,
     banned_characters: BTreeSet<String>,
-    banned_ships: BTreeSet<String>,
+    banned_ships: ShipSet,
 }
 
 impl Smushes {
@@ -223,8 +367,8 @@ impl BaseCfg {
         chars
     }
 
-    fn process_ships(&self, ships: String) -> BTreeSet<String> {
-        let mut prefs = BTreeSet::new();
+    fn process_ships(&self, ships: String) -> ShipSet {
+        let mut set = ShipSet::default();
         for chunk in parenthetical()
             .replace_all(&ships, "")
             .replace(';', ",")
@@ -233,18 +377,19 @@ impl BaseCfg {
             let chunk = self.smushes.desmush(chunk.trim().to_lowercase());
             let parts: Vec<_> = chunk
                 .trim()
-                .replace(['x', '&', '\\'], "/")
+                .replace(['&', '\\'], "/")
                 .split('/')
                 .map(|c| c.trim().to_lowercase())
                 .map(|c| self.canonicalize(c))
                 .collect();
-            for mut ship in resolve_ships(parts).into_iter() {
+            for ship in resolve_ships(parts).into_iter() {
+                let mut ship = ship.into_iter().map(|item| item.into()).collect::<Vec<_>>();
                 ship.sort();
-                prefs.insert(ship.join("/"));
+                set.insert(ShipSpec(ship));
             }
         }
 
-        prefs
+        set
     }
 }
 
@@ -257,6 +402,18 @@ impl Cfg {
             email: row
                 .remove(&self.columns.email)
                 .ok_or_else(|| anyhow!("email column not found"))?,
+            pinch_hitter: row
+                .remove(&self.columns.pinch_hitter)
+                .ok_or_else(|| anyhow!("pinch hitter column not found"))?
+                == "Yes",
+            creation_type: row
+                .remove(&self.columns.creation_type)
+                .ok_or_else(|| anyhow!("creation type column not found"))?
+                .try_into()?,
+            desired_type: row
+                .remove(&self.columns.desired_type)
+                .ok_or_else(|| anyhow!("creation type column not found"))?
+                .try_into()?,
 
             desired_characters: self.base.process_characters(
                 row.remove(&self.columns.desired_characters)
@@ -290,10 +447,20 @@ impl Participant {
             return false;
         }
 
-        if giftee.desired_ships.difference(&self.banned_ships).count()
+        if giftee.desired_ships.difference(&self.banned_ships)
             < (giftee.desired_ships.len() as f32 * mismatch_threshold) as usize
         {
             return false;
+        }
+
+        match (self.creation_type, giftee.desired_type) {
+            (CreationType::FanArt, CreationType::Fanfiction)
+            | (CreationType::Fanfiction, CreationType::FanArt) => return false,
+
+            (CreationType::Either, _)
+            | (_, CreationType::Either)
+            | (CreationType::FanArt, CreationType::FanArt)
+            | (CreationType::Fanfiction, CreationType::Fanfiction) => (),
         }
 
         true
@@ -330,10 +497,10 @@ pub fn run() -> Result<(), anyhow::Error> {
         Commands::ListShips => {
             let mut ships = BTreeMap::<_, u32>::new();
             for row in data {
-                for ship in row.desired_ships.into_iter() {
+                for ship in row.desired_ships.0.into_iter() {
                     *ships.entry(ship).or_default() += 1;
                 }
-                for ship in row.banned_ships.into_iter() {
+                for ship in row.banned_ships.0.into_iter() {
                     *ships.entry(ship).or_default() += 1;
                 }
             }
@@ -362,6 +529,25 @@ pub fn run() -> Result<(), anyhow::Error> {
             }
             if !found_dupe {
                 println!("✨ No Duplicates! ✨");
+            }
+        }
+        Commands::FindPinchHitter { giftee } => {
+            let mut rng = rand::thread_rng();
+            let mut candidates = Vec::new();
+            for (a, b) in itertools::iproduct!(&data, &data) {
+                if a == b {
+                    continue;
+                }
+                if b.email != giftee {
+                    continue;
+                }
+                if a.can_make_for(b, cfg.mismatch_threshold) && a.pinch_hitter {
+                    candidates.push(a.email.clone());
+                }
+            }
+            candidates.shuffle(&mut rng);
+            for candidate in candidates {
+                println!("{candidate}");
             }
         }
         Commands::AssignSantas => {
@@ -499,13 +685,12 @@ ace = ["portgas ace", "portgas d. ace"]
 
         assert_eq!(
             cfg.process_ships("boa/luffy,monkey d/ace".into()),
-            [
-                "ace/dragon".into(),
-                "ace/garp".into(),
-                "ace/luffy".into(),
-                "boa hancock/luffy".into()
-            ]
-            .into()
+            ShipSet(vec![
+                ShipSpec(vec!["ace".into(), "dragon".into(),]),
+                ShipSpec(vec!["ace".into(), "garp".into(),]),
+                ShipSpec(vec!["ace".into(), "luffy".into()]),
+                ShipSpec(vec!["boa hancock".into(), "luffy".into(),]),
+            ])
         );
     }
 }

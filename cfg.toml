@@ -1,11 +1,15 @@
 [columns]
 email = "Email Address"
+pinch_hitter = "Would you be willing to be a pinch hitter?"
 
 desired_characters = "Favorite character(s)"
 desired_ships = "Favorite ships"
 
-banned_characters = "Characters I do not want to create for"
+banned_characters = "Characters I do not want to create for:"
 banned_ships = "Ships I do not want to create for"
+
+desired_type = "Preferred gift type"
+creation_type = "Preferred method of gifting"
 
 [smushes]
 acelu = "ace/luffy"
@@ -71,6 +75,7 @@ zorotashigi = "zoro/tashigi"
 zosan = "zoro/sanji"
 zotash = "zoro/tashigi"
 
+
 [families.vinsmoke]
 members = ["ichiji", "judge", "niji", "reiju", "sanji", "sora", "yonji"]
 
@@ -80,14 +85,30 @@ misspellings = ["monkey d"]
 
 [families."portgas d."]
 members = ["ace", "rouge"]
-misspellings = ["portags d", "portags d.", "portgas d"]
+misspellings = ["portags d", "portags d.", "portgas d", "portgas"]
 
 [families.donquixote]
 members = ["doflamingo", "rocinante", "rosinante"]
 
 [families.charlotte]
-members = ["katakuri", "linlin", "perospero", "pudding", "smoothie"]
-misspellings = ["charolotte"]
+members = [
+    "katakuri",
+    "linlin",
+    "perospero",
+    "pudding",
+    "smoothie",
+    "amande",
+    "daifuku",
+    "mont-d'or",
+    "oven",
+    "chiffon",
+    "chimney",
+    "cracker",
+    "brulee",
+    "lola",
+    "amande",
+]
+misspellings = ["charolotte", "big mom pirates"]
 
 [families.kurozumi]
 members = ["kanjuro", "orochi", "tama"]
@@ -115,13 +136,58 @@ members = [
 ]
 misspellings = ["strawhats"]
 
+[families.marines]
+members = [
+    "aramaki",
+    "borsalino",
+    "coby",
+    "drake",
+    "garp",
+    "helmeppo",
+    "hina",
+    "issho",
+    "kuzan",
+    "sakazuki",
+    "sengoku",
+    "smoker",
+    "tashigi",
+]
+misspellings = ["the vice admirals"]
+
+[families."cross guild"]
+members = ["mihawk", "crocodile", "buggy"]
+
+[families."blackbeard pirates"]
+members = ["blackbeard", "aokiji", "katarina devon"]
+
+[families."five elders"]
+members = []
+
+[families."rocks pirates"]
+members = [
+    "rocks",
+    "edward newgate",
+    "shiki",
+    "linlin",
+    "stussy",
+    "gloriosa",
+    "kaido",
+]
+
+[families."red haired pirates"]
+members = ["shanks", "yassop", "beckman", "lucky roo"]
+
 [characters]
+iceberg = "iceburg"
+"kin'emon" = "kinemon"
 akainu = "sakazuki"
-aokiji = "kuzan"
+sanji = "sanji vinsmoke"
+aokiji = ["kuzan", "aokiji/kuzan", "kuzan/aokiji"]
 apoo = "scratchmen apoo"
 "baby 5" = "baby5"
 bartolomeo = "barto"
-bellmere = ["bell-mère", "bellmère"]
+brulee = ["brûlée", "charlotte brûlée"]
+bellmere = ["bell-mère", "bellmère", "bellmere"]
 "big mom" = "linlin"
 blackbeard = [
     "marshal d teach",
@@ -130,38 +196,53 @@ blackbeard = [
     "marshall d. teach",
     "marshall d. teach/blackbeard",
 ]
-"boa hancock" = ["boa handcock", "boa"]
+"boa hancock" = ["boa handcock", "boa", "hancock"]
 "bon clay" = "bon"
+galdino = ["mr 3", "mr. 3", "mr.3"]
 buggy = "buggy the clown"
 caesar = ["caesar clown", "ceasar clown"]
 chopper = ["tony tony chopper", "tonytony chopper"]
 coby = "koby"
+shanks = ["red hair shanks"]
+zeff = ["red leg zeff"]
 corazon = [
+    "cora",
+    "corzon",
     "corazón",
     "rocinante",
     "roscinante",
     "rosinante donquixote",
+    "donquixote rosinante",
     "rosinante",
+    "donquixote “corazón” rosinante",
 ]
 crocodile = "sir crocodile"
-doflamingo = "doflamingo donquixote"
+doflamingo = ["doflamingo donquixote", "doffy", "donquixote doflamingo"]
 drake = ["x drake", "xdrake"]
 enel = "god enel"
+deuce = "masked deuce"
 fujitora = "issho"
 jack = "jack the drought"
+kuma = ["bartholomew kuma"]
 jinbe = ["jimbe", "jimbei", "jinbei"]
-kidd = ["eustass kid", "eustass kidd", "kid"]
+kidd = ["eustass kid", "eustass kidd", "kid", "eustass captain kidd"]
+hogback = "hogsback"
+"jewelry bonney" = ["bonney"]
 kizaru = "borsalino"
+beckman = ["benn beckman", "beckmann", "benn beckmann"]
 law = [
     "trafalgar d law",
     "trafalgar d water law",
+    "trafalgar d. law",
     "trafalgar d. water law",
     "trafalgar law 💛",
     "trafalgar law",
+    "trafalgar water d law",
     "trafalgar water d. law",
     "trafalger d. water law",
     "trafargar d. water law",
     "tralfagar law",
+    "tralfalgar d. water law",
 ]
 lucci = "rob lucci"
 luffyko = "femluffy"
@@ -174,6 +255,13 @@ rocks = "rocks d xebec"
 "senor pink" = ["senior pink", "senor pink"]
 smoker = "smo"
 tama = "otama"
-"van der decken" = "vander decken"
-vivi = "nefertari vivi"
-zoro = "roronoa zoro"
+"van der decken" = ["vander decken", "vander decken ix"]
+yonji = "yonji vinsmoke"
+vivi = ["nefertari vivi", "viví", "nefertari d. vivi", "princess vivi"]
+zoro = ["roronoa zoro", "roronoro zoro"]
+hawkins = "basil hawkins"
+bellamy = "bellamy the hyena"
+"don krieg" = "don krig"
+roger = ["gol d roger", "gol d. roger"]
+perospero = "peros"
+rayleigh = ["ray"]
